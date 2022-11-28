@@ -56,6 +56,7 @@ Srv6Orch *gSrv6Orch;
 FlowCounterRouteOrch *gFlowCounterRouteOrch;
 DebugCounterOrch *gDebugCounterOrch;
 
+
 bool gIsNatSupported = false;
 bool gSaiRedisLogRotate = false;
 event_handle_t g_events_handle;
@@ -647,6 +648,7 @@ bool OrchDaemon::init()
     }
 
     m_orchList.push_back(&CounterCheckOrch::getInstance(m_configDb));
+    m_orchList.push_back(&MonitorTxOrch::getInstance(m_configDb));
 
     vector<string> p4rt_tables = {APP_P4RT_TABLE_NAME};
     gP4Orch = new P4Orch(m_applDb, p4rt_tables, vrf_orch, gCoppOrch);
