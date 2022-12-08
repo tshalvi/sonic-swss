@@ -44,7 +44,7 @@ bool PortsOrch::isPortAdminUp(const string &alias)
     return true;
 }
 
-std::map<string, Port> &PortsOrch::getAllPorts()
+std::map<string, Port>& PortsOrch::getAllPorts()
 {
     return m_portList;
 }
