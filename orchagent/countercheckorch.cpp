@@ -28,6 +28,8 @@ CounterCheckOrch::CounterCheckOrch(DBConnector *db, vector<string> &tableNames):
 {
     SWSS_LOG_ENTER();
 
+    SWSS_LOG_NOTICE("------------------ TOMER IN COUNTERCHECKORCH CONSTRUCTOR ------------------");
+
     auto interv = timespec { .tv_sec = COUNTER_CHECK_POLL_TIMEOUT_SEC, .tv_nsec = 0 };
     auto timer = new SelectableTimer(interv);
     auto executor = new ExecutableTimer(timer, this, "MC_COUNTERS_POLL");
@@ -43,6 +45,9 @@ CounterCheckOrch::~CounterCheckOrch(void)
 void CounterCheckOrch::doTask(SelectableTimer &timer)
 {
     SWSS_LOG_ENTER();
+
+
+    SWSS_LOG_NOTICE("------------------ TOMER IN COUNTERSCHECKORCH.CPP ------------------");
 
     mcCounterCheck();
     pfcFrameCounterCheck();
