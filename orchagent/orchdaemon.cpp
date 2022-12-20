@@ -27,11 +27,7 @@ extern void syncd_apply_view();
  * Global orch daemon variables
  */
 PortsOrch *gPortsOrch;
-
-
 MonitorTxOrch *gMonitorTxOrch;
-
-
 FabricPortsOrch *gFabricPortsOrch;
 FdbOrch *gFdbOrch;
 IntfsOrch *gIntfsOrch;
@@ -349,15 +345,8 @@ bool OrchDaemon::init()
 
     gNhgMapOrch = new NhgMapOrch(m_applDb, APP_FC_TO_NHG_INDEX_MAP_TABLE_NAME);
 
-
-
-
     TableConnector txErrorConfigTableConnector(m_configDb, CFG_TX_ERROR_MONITOR_TABLE_NAME);
     gMonitorTxOrch = &MonitorTxOrch::getInstance(txErrorConfigTableConnector);
-
-
-
-
 
     /*
      * The order of the orch list is important for state restore of warm start and
@@ -662,7 +651,6 @@ bool OrchDaemon::init()
     }
 
     m_orchList.push_back(&CounterCheckOrch::getInstance(m_configDb));
-//    m_orchList.push_back(&MonitorTxOrch::getInstance(m_configDb));
 
     vector<string> p4rt_tables = {APP_P4RT_TABLE_NAME};
     gP4Orch = new P4Orch(m_applDb, p4rt_tables, vrf_orch, gCoppOrch);
