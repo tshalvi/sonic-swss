@@ -30,6 +30,7 @@
 #include "vxlanorch.h"
 #include "vnetorch.h"
 #include "countercheckorch.h"
+#include "monitortxorch.h"
 #include "flexcounterorch.h"
 #include "watermarkorch.h"
 #include "policerorch.h"
