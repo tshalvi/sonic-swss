@@ -16,6 +16,7 @@
 #include <tuple>
 #include <sstream>
 #include <unordered_set>
+#include <unistd.h>
 
 #include <netinet/if_ether.h>
 #include "net/if.h"
@@ -3216,6 +3217,7 @@ void PortsOrch::removePortFromPortListMap(sai_object_id_t port_id)
 
 void PortsOrch::doPortTask(Consumer &consumer)
 {
+    SWSS_LOG_ERROR("----- TOMER ----- entered PortsOrch::doPortTask(Consumer &consumer)");
     SWSS_LOG_ENTER();
 
     auto &taskMap = consumer.m_toSync;
@@ -3300,6 +3302,7 @@ void PortsOrch::doPortTask(Consumer &consumer)
 
         if (op == SET_COMMAND)
         {
+            SWSS_LOG_ERROR("----- TOMER ----- inside if(op == SET_COMMAND)");
             auto &fvMap = m_portConfigMap[key];
 
             for (const auto &cit : kfvFieldsValues(keyOpFieldsValues))
@@ -3955,16 +3958,25 @@ void PortsOrch::doPortTask(Consumer &consumer)
                     }
                 }
 
+                SWSS_LOG_ERROR("----- TOMER ----- Before initHostTxReadyState(p)");
+                SWSS_LOG_ERROR("----- TOMER ----- Sleep(3) to simulate HW_TX_READY");
+                sleep(3);
+                SWSS_LOG_ERROR("----- TOMER ----- Done sleeping");
                 /* create host_tx_ready field in state-db */
                 initHostTxReadyState(p);
+                SWSS_LOG_ERROR("----- TOMER ----- After initHostTxReadyState(p)");
 
+                SWSS_LOG_ERROR("----- TOMER ----- Trying to setPortAdminStatus('up')");
                 /* Last step set port admin status */
                 if (pCfg.admin_status.is_set)
                 {
+                    SWSS_LOG_ERROR("----- TOMER ----- inside if (pCfg.admin_status.is_set)");
                     if (p.m_admin_state_up != pCfg.admin_status.value)
                     {
+                        SWSS_LOG_ERROR("----- TOMER ----- inside if (p.m_admin_state_up != pCfg.admin_status.value)");
                         if (!setPortAdminStatus(p, pCfg.admin_status.value))
                         {
+                            SWSS_LOG_ERROR("----- TOMER ----- inside if (!setPortAdminStatus(p, pCfg.admin_status.value))");
                             SWSS_LOG_ERROR(
                                 "Failed to set port %s admin status to %s",
                                 p.m_alias.c_str(), m_portHlpr.getAdminStatusStr(pCfg).c_str()
@@ -3982,7 +3994,9 @@ void PortsOrch::doPortTask(Consumer &consumer)
                         );
                     }
                 }
+                SWSS_LOG_ERROR("----- TOMER ----- After sending ADMIN_UP");
             }
+            SWSS_LOG_ERROR("----- TOMER ----- END of if(op == SET_COMMAND)");
         }
         else if (op == DEL_COMMAND)
         {
