@@ -339,42 +339,41 @@ static void getPortSerdesAttr(PortSerdesAttrMap_t &map, const PortConfig &port)
         map[SAI_PORT_SERDES_ATTR_TX_FIR_ATTN] = port.serdes.attn.value;
     }
 
-    if (port.serdes.ob_m2lp.is_set)
-    {
-    
-        map[SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO] = port.serdes.ob_m2lp.value;
-    }
 
-    if (port.serdes.ob_alev_out.is_set)
-    {
-        map[SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE] = port.serdes.ob_alev_out.value;
-    }
+    // // TODO: Uncomment line below when SAI version is available
 
-    if (port.serdes.obplev.is_set)
-    {
-        map[SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE] = port.serdes.obplev.value;
-    }
-
-    if (port.serdes.obnlev.is_set)
-    {
-        map[SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE] = port.serdes.obnlev.value;
-    }
-
-    if (port.serdes.regn_bfm1p.is_set)
-    {
-        map[SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG] = port.serdes.regn_bfm1p.value;
-    }
-
-    if (port.serdes.regn_bfm1n.is_set)
-    {
-        map[SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG] = port.serdes.regn_bfm1n.value;
-    }
-
-    // SWSS_LOG_ERROR(" --- tomer --- getPortSerdesAttr(): printing SerDes attr map:");
-    // for (const auto &pair : fvMap)
+    // if (port.serdes.ob_m2lp.is_set)
     // {
-    //     SWSS_LOG_ERROR(" --- tomer --- getPortSerdesAttr():   %s : %s --> %s \n", key.c_str(), (pair.first).c_str(), (pair.second).c_str());
+    
+    //     map[SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO] = port.serdes.ob_m2lp.value;
     // }
+
+    // if (port.serdes.ob_alev_out.is_set)
+    // {
+    //     map[SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE] = port.serdes.ob_alev_out.value;
+    // }
+
+    // if (port.serdes.obplev.is_set)
+    // {
+    //     map[SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE] = port.serdes.obplev.value;
+    // }
+
+    // if (port.serdes.obnlev.is_set)
+    // {
+    //     map[SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE] = port.serdes.obnlev.value;
+    // }
+
+    // if (port.serdes.regn_bfm1p.is_set)
+    // {
+    //     map[SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG] = port.serdes.regn_bfm1p.value;
+    // }
+
+    // if (port.serdes.regn_bfm1n.is_set)
+    // {
+    //     map[SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG] = port.serdes.regn_bfm1n.value;
+    // }
+
+    
 }
 
 // Port OA ------------------------------------------------------------------------------------------------------------
@@ -3302,11 +3301,8 @@ void PortsOrch::doPortTask(Consumer &consumer)
 
         if (op == SET_COMMAND)
         {
-<<<<<<< Updated upstream
-=======
             SWSS_LOG_ERROR(" --- tomer --- doPortTask(): inside  if op == SET_COMMAND");
 
->>>>>>> Stashed changes
             auto &fvMap = m_portConfigMap[key];
 
             for (const auto &cit : kfvFieldsValues(keyOpFieldsValues))
@@ -3319,7 +3315,7 @@ void PortsOrch::doPortTask(Consumer &consumer)
                 fvMap[fieldName] = fieldValue;
             }
 
-            // SWSS_LOG_ERROR(" --- tomer --- doPortTask(): printing m_portConfigMap[%s] content:", key.c_str());
+            SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL RESULTS - PortsOrch was triggered and starting to read SI values");
             SWSS_LOG_ERROR(" --- tomer --- doPortTask(): printing APP_DB data for port: %s:", key.c_str());
             for (const auto &pair : fvMap)
             {
@@ -3957,18 +3953,6 @@ void PortsOrch::doPortTask(Consumer &consumer)
                     }
                 }
 
-<<<<<<< Updated upstream
-                /* create host_tx_ready field in state-db */
-                initHostTxReadyState(p);
-
-                /* Last step set port admin status */
-                if (pCfg.admin_status.is_set)
-                {
-                    if (p.m_admin_state_up != pCfg.admin_status.value)
-                    {
-                        if (!setPortAdminStatus(p, pCfg.admin_status.value))
-                        {
-=======
                 SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): Before initHostTxReadyState(p)");
                 SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): Sleep(3) to simulate HW_TX_READY");
                 sleep(3);
@@ -3988,7 +3972,6 @@ void PortsOrch::doPortTask(Consumer &consumer)
                         if (!setPortAdminStatus(p, pCfg.admin_status.value))
                         {
                             SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): inside if (!setPortAdminStatus(p, pCfg.admin_status.value))");
->>>>>>> Stashed changes
                             SWSS_LOG_ERROR(
                                 "Failed to set port %s admin status to %s",
                                 p.m_alias.c_str(), m_portHlpr.getAdminStatusStr(pCfg).c_str());
@@ -4004,13 +3987,9 @@ void PortsOrch::doPortTask(Consumer &consumer)
                             p.m_alias.c_str(), m_portHlpr.getAdminStatusStr(pCfg).c_str());
                     }
                 }
-<<<<<<< Updated upstream
-            }
-=======
                 SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): After sending ADMIN_UP");
             }
             SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): END of if(op == SET_COMMAND)");
->>>>>>> Stashed changes
         }
         else if (op == DEL_COMMAND)
         {
@@ -7329,20 +7308,19 @@ std::string attrToString(sai_port_serdes_attr_t attr)
     case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_FIR_ATTN:
         return "SAI_PORT_SERDES_ATTR_TX_FIR_ATTN";
 
-        // TODO: uncomment below when new SAI version is available
-
-        // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO:
-        //     return "SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO";
-        // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE:
-        //     return "SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE";
-        // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE:
-        //     return "SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE";
-        // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE:
-        //     return "SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE";
-        // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG:
-        //     return "SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG";
-        // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG:
-        //     return "SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG";
+    // // TODO: uncomment below when new SAI version is available
+    // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO:
+    //     return "SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO";
+    // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE:
+    //     return "SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE";
+    // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE:
+    //     return "SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE";
+    // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE:
+    //     return "SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE";
+    // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG:
+    //     return "SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG";
+    // case sai_port_serdes_attr_t::SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG:
+    //     return "SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG";
 
     default:
         return "Unknown Attribute";
@@ -7354,10 +7332,10 @@ bool PortsOrch::setPortSerdesAttribute(sai_object_id_t port_id,
 {
     SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): before setPortSerdesAttribute()");
     SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): entering setPortSerdesAttribute()");
-    SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS: Starting tosend SerDes attr to SAI for Port ID: %llu\n", port_id);
+    SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS2: Starting to send SerDes attr to SAI for Port ID: %lu\n", port_id);
 
-    SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS: printing serdes_attr content:");
-    SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS: Port ID: %llu\n", port_id);
+    SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS2: printing serdes_attr content:");
+    SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS2: Port ID: %lu\n", port_id);
     
     // TODO: add print for serdes_attr
     for (const auto &entry : serdes_attr)
@@ -7365,11 +7343,11 @@ bool PortsOrch::setPortSerdesAttribute(sai_object_id_t port_id,
         const sai_port_serdes_attr_t &key = entry.first;
         const std::vector<uint32_t> &values = entry.second;
 
-        SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS: Attribute: %s\n", (attrToString(key)).c_str());
-        SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS: Values: ");
+        SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS2: Attribute: %s\n", (attrToString(key)).c_str());
+        SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS2: Values: ");
         for (const auto &value : values)
         {
-            SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS:      %u ", value);
+            SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): FINAL RESULTS2:      %u ", value);
         }
     }
 

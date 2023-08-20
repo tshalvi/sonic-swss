@@ -930,7 +930,6 @@ bool PortHelper::parsePortConfig(PortConfig &port) const
 
 
 
-        // SWSS_LOG_ERROR(" --- tomer --- Starting new SI params configuration");
         // here
         else if (field == PORT_OB_M2LP)
         {
