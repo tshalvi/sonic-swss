@@ -3988,6 +3988,7 @@ void PortsOrch::doPortTask(Consumer &consumer)
                     }
                     else
                     {
+			            SWSS_LOG_ERROR(" --- tomer --- doPortTask(): else of  if (p.m_link_training)");
                         if (p.m_admin_state_up)
                         {
                                 SWSS_LOG_ERROR(" --- tomer --- doPortTask(): iniside  if (p.m_admin_state_up)");
@@ -4002,16 +4003,21 @@ void PortsOrch::doPortTask(Consumer &consumer)
 
                                 p.m_admin_state_up = false;
                                 m_portList[p.m_alias] = p;
+				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): leaving  if (p.m_admin_state_up)");
                         }
 
                         if (setPortSerdesAttribute(p.m_port_id, gSwitchId, serdes_attr))
                         {
-                            SWSS_LOG_NOTICE("Set port %s SI settings is successful", p.m_alias.c_str());
+			    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): iniside  if (setPortSerdesAttribute(p.m_port_id, gSwitchId, serdes_attr))");
+                            SWSS_LOG_NOTICE(" --- tomer --- doPortTask(): Set port %s SI settings is successful", p.m_alias.c_str());
+			    SWSS_LOG_NOTICE("Set port %s SI settings is successful", p.m_alias.c_str());
                             p.m_preemphasis = serdes_attr;
                             m_portList[p.m_alias] = p;
                         }
                         else
                         {
+			    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): inside else of  if (setPortSerdesAttribute(p.m_port_id, gSwitchId, serdes_attr))");
+			    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): Failed to set port %s SI settings", p.m_alias.c_str());
                             SWSS_LOG_ERROR("Failed to set port %s SI settings", p.m_alias.c_str());
                             it++;
                             continue;
@@ -4055,8 +4061,179 @@ void PortsOrch::doPortTask(Consumer &consumer)
                     }
                 }
                 SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): After sending ADMIN_UP");
-            }
-            SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): END of if(op == SET_COMMAND)");
+	        
+			    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: after applying port toggling");
+				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: trying to read port serdes after setPortSerdesAttribute()");
+
+    		    //TODO: remove this part
+    		    //--------------------------------------------
+    		    
+    		    int32_t MAX_LANES_SPC3_4 = 8;
+				sai_status_t status = SAI_STATUS_NOT_SUPPORTED;
+				sai_status_t status2 = SAI_STATUS_NOT_SUPPORTED;
+				sai_attribute_t port_attr;
+				
+    		    int32_t                        idriver_values_get[8];   // size = MAX_LANES_SPC3_4
+			    std::memset(idriver_values_get, 0, sizeof(idriver_values_get));
+			    
+    		    int32_t                        tx_fir_pre1_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_fir_pre1_values_get, 0, sizeof(tx_fir_pre1_values_get));
+			    
+			    int32_t                        tx_fir_pre2_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_fir_pre2_values_get, 0, sizeof(tx_fir_pre2_values_get));
+			    
+			    int32_t                        tx_fir_pre3_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_fir_pre3_values_get, 0, sizeof(tx_fir_pre3_values_get));
+			    
+			    int32_t                        tx_fir_main_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_fir_main_values_get, 0, sizeof(tx_fir_main_values_get));
+			    
+			    int32_t                        tx_fir_post1_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_fir_post1_values_get, 0, sizeof(tx_fir_post1_values_get));
+			    
+			    int32_t                        tx_pam4_ratio_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_pam4_ratio_values_get, 0, sizeof(tx_pam4_ratio_values_get));
+			    
+			    int32_t                        tx_out_cmmn_mod_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_out_cmmn_mod_values_get, 0, sizeof(tx_out_cmmn_mod_values_get));
+			    
+			    int32_t                        tx_pmos_cmmn_mod_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_pmos_cmmn_mod_values_get, 0, sizeof(tx_pmos_cmmn_mod_values_get));
+			    
+			    int32_t                        tx_nmos_cmmn_mod_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_nmos_cmmn_mod_values_get, 0, sizeof(tx_nmos_cmmn_mod_values_get));
+			    
+			    int32_t                        tx_pmos_vltg_reg_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_pmos_vltg_reg_values_get, 0, sizeof(tx_pmos_vltg_reg_values_get));
+			    
+			    int32_t                        tx_nmos_vltg_reg_values_get[8];   // size = MAX_LANES_SPC3_4
+    		    std::memset(tx_nmos_vltg_reg_values_get, 0, sizeof(tx_nmos_vltg_reg_values_get));
+			    
+			    
+			    
+			    
+    		    sai_attribute_t                attrs_get[16];
+    		    
+    		    
+    		    attrs_get[0].id = SAI_PORT_SERDES_ATTR_PORT_ID;
+    		    attrs_get[1].id = SAI_PORT_SERDES_ATTR_IDRIVER;
+    		    attrs_get[1].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[1].value.s32list.list = idriver_values_get;
+    		    attrs_get[2].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE1;
+    		    attrs_get[2].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[2].value.s32list.list = tx_fir_pre1_values_get;
+    		    attrs_get[3].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE2;
+    		    attrs_get[3].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[3].value.s32list.list = tx_fir_pre2_values_get;
+    		    attrs_get[4].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE3;
+    		    attrs_get[4].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[4].value.s32list.list = tx_fir_pre3_values_get;
+    		    attrs_get[5].id = SAI_PORT_SERDES_ATTR_TX_FIR_MAIN;
+    		    attrs_get[5].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[5].value.s32list.list = tx_fir_main_values_get;
+    		    attrs_get[6].id = SAI_PORT_SERDES_ATTR_TX_FIR_POST1;
+    		    attrs_get[6].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[6].value.s32list.list = tx_fir_post1_values_get;
+    		    attrs_get[7].id = SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO;
+    		    attrs_get[7].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[7].value.s32list.list = tx_pam4_ratio_values_get;
+    		    attrs_get[8].id = SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE;
+    		    attrs_get[8].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[8].value.s32list.list = tx_out_cmmn_mod_values_get;
+    		    attrs_get[9].id = SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE;
+    		    attrs_get[9].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[9].value.s32list.list = tx_pmos_cmmn_mod_values_get;
+    		    attrs_get[10].id = SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE;
+    		    attrs_get[10].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[10].value.s32list.list = tx_nmos_cmmn_mod_values_get;
+    		    attrs_get[11].id = SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG;
+    		    attrs_get[11].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[11].value.s32list.list = tx_pmos_vltg_reg_values_get;
+    		    attrs_get[12].id = SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG;
+    		    attrs_get[12].value.s32list.count = MAX_LANES_SPC3_4;
+    		    attrs_get[12].value.s32list.list = tx_nmos_vltg_reg_values_get;
+    		    
+				
+				
+
+				    // attr.id = SAI_PORT_ATTR_QOS_QUEUE_LIST;
+					// attr.value.objlist.count = (uint32_t)port.m_queue_ids.size();
+					// attr.value.objlist.list = port.m_queue_ids.data();
+
+					// status = sai_port_api->get_port_attribute(port.m_port_id, 1, &attr);
+					
+	
+	
+				
+				port_attr.id = SAI_PORT_ATTR_PORT_SERDES_ID;
+				status2 = sai_port_api->get_port_attribute(p.m_port_id, 1, &port_attr);
+				if (status2 != SAI_STATUS_SUCCESS)
+    		    {
+    		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Failed to get port serdes id for port 0x%" PRIx64, p.m_port_id);
+    		    }
+    		    else
+				{
+    		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Succeeded to get port id serdes for port 0x%" PRIx64, p.m_port_id);
+    		    }
+				
+				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.id = %" PRIu32, port_attr.id);
+				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.value.oid = 0x%" PRIx64, port_attr.value.oid);
+
+				// if(port_attr.value.oid == nullptr){
+					// SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.id IS NULL");
+				// }
+				// else{
+					// SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.id IS NOT NULL");
+				// }
+				
+				
+    		    status = sai_port_api->get_port_serdes_attribute(port_attr.value.oid, 13, attrs_get);
+    		    
+    		    if (status != SAI_STATUS_SUCCESS)
+    		    {
+    		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Failed to read port serdes for port 0x%" PRIx64, p.m_port_id);
+    		    }
+    		    else
+				{
+    		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Succeeded to read port serdes for port 0x%" PRIx64, p.m_port_id);
+    		    }
+    		    
+    		    
+    		    
+    		    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: printing SerDes content:");
+    		    
+    		    for (int i = 0; i < 13; i++) // Loop through the attrs_get array
+				{
+    		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Attribute: %" PRIu32 "\n", attrs_get[i].id);
+    		    
+    		        if (attrs_get[i].id == SAI_PORT_SERDES_ATTR_IDRIVER ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE1 ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE2 ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE3 ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_MAIN ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_POST1 ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG ||
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG) 
+					{
+    		    
+    		            SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3:     Array values: ");
+    		            for (uint32_t j = 0; j < attrs_get[i].value.s32list.count; j++) 
+						{
+    		                SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3:  %" PRIu32 " ", attrs_get[i].value.s32list.list[j]);
+    		            }
+    		        }
+    		    }
+    		    
+    		    //--------------------------------------------
+			
+			
+			
+			}
+            SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): FINAL_RESULTS3: END of if(op == SET_COMMAND)");
         }
         else if (op == DEL_COMMAND)
         {
@@ -7528,113 +7705,140 @@ bool PortsOrch::setPortSerdesAttribute(sai_object_id_t port_id, sai_object_id_t 
     }
     SWSS_LOG_NOTICE("Created port serdes object 0x%" PRIx64 " for port 0x%" PRIx64, port_serdes_id, port_id);
     SWSS_LOG_ERROR(" --- tomer --- after setPortSerdesAttribute()");
-    SWSS_LOG_ERROR(" --- tomer --- trying to read port serdes after setPortSerdesAttribute()");
+    
+    // SWSS_LOG_ERROR(" --- tomer --- trying to read port serdes after setPortSerdesAttribute()");
+     
+     
+     
+     
     
     
     
+    //// TODO: remove this part
+    //// --------------------------------------------
     
-
-
-
-    //TODO: remove this part
-    //--------------------------------------------
+    // int32_t MAX_LANES_SPC3_4 = 8;
+    	    
+    // int32_t                        idriver_values_get[MAX_LANES_SPC3_4];
+	// std::memset(idriver_values_get, 0, sizeof(idriver_values_get));
+	
+    // int32_t                        tx_fir_pre1_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_fir_pre1_values_get, 0, sizeof(tx_fir_pre1_values_get));
+	
+	// int32_t                        tx_fir_pre2_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_fir_pre2_values_get, 0, sizeof(tx_fir_pre2_values_get));
+	
+	// int32_t                        tx_fir_pre3_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_fir_pre3_values_get, 0, sizeof(tx_fir_pre3_values_get));
+	
+	// int32_t                        tx_fir_main_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_fir_main_values_get, 0, sizeof(tx_fir_main_values_get));
+	
+	// int32_t                        tx_fir_post1_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_fir_post1_values_get, 0, sizeof(tx_fir_post1_values_get));
+	
+	// int32_t                        tx_pam4_ratio_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_pam4_ratio_values_get, 0, sizeof(tx_pam4_ratio_values_get));
+	
+	// int32_t                        tx_out_cmmn_mod_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_out_cmmn_mod_values_get, 0, sizeof(tx_out_cmmn_mod_values_get));
+	
+	// int32_t                        tx_pmos_cmmn_mod_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_pmos_cmmn_mod_values_get, 0, sizeof(tx_pmos_cmmn_mod_values_get));
+	
+	// int32_t                        tx_nmos_cmmn_mod_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_nmos_cmmn_mod_values_get, 0, sizeof(tx_nmos_cmmn_mod_values_get));
+	
+	// int32_t                        tx_pmos_vltg_reg_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_pmos_vltg_reg_values_get, 0, sizeof(tx_pmos_vltg_reg_values_get));
+	
+	// int32_t                        tx_nmos_vltg_reg_values_get[MAX_LANES_SPC3_4];
+    // std::memset(tx_nmos_vltg_reg_values_get, 0, sizeof(tx_nmos_vltg_reg_values_get));
+	
+	
+	
+	
+    // sai_attribute_t                attrs_get[16];
     
-    int32_t MAX_LANES_SPC3_4 = 8;
-	    
-    int32_t                        idriver_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_fir_pre1_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_fir_pre2_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_fir_pre3_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_fir_main_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_fir_post1_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_pam4_ratio_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_out_cmmn_mod_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_pmos_cmmn_mod_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_nmos_cmmn_mod_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_pmos_vltg_reg_values_get[MAX_LANES_SPC3_4];
-    int32_t                        tx_nmos_vltg_reg_values_get[MAX_LANES_SPC3_4];
     
-    sai_attribute_t                attrs_get[16];
+    // attrs_get[0].id = SAI_PORT_SERDES_ATTR_PORT_ID;
+    // attrs_get[1].id = SAI_PORT_SERDES_ATTR_IDRIVER;
+    // attrs_get[1].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[1].value.s32list.list = idriver_values_get;
+    // attrs_get[2].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE1;
+    // attrs_get[2].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[2].value.s32list.list = tx_fir_pre1_values_get;
+    // attrs_get[3].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE2;
+    // attrs_get[3].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[3].value.s32list.list = tx_fir_pre2_values_get;
+    // attrs_get[4].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE3;
+    // attrs_get[4].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[4].value.s32list.list = tx_fir_pre3_values_get;
+    // attrs_get[5].id = SAI_PORT_SERDES_ATTR_TX_FIR_MAIN;
+    // attrs_get[5].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[5].value.s32list.list = tx_fir_main_values_get;
+    // attrs_get[6].id = SAI_PORT_SERDES_ATTR_TX_FIR_POST1;
+    // attrs_get[6].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[6].value.s32list.list = tx_fir_post1_values_get;
+    // attrs_get[7].id = SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO;
+    // attrs_get[7].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[7].value.s32list.list = tx_pam4_ratio_values_get;
+    // attrs_get[8].id = SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE;
+    // attrs_get[8].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[8].value.s32list.list = tx_out_cmmn_mod_values_get;
+    // attrs_get[9].id = SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE;
+    // attrs_get[9].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[9].value.s32list.list = tx_pmos_cmmn_mod_values_get;
+    // attrs_get[10].id = SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE;
+    // attrs_get[10].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[10].value.s32list.list = tx_nmos_cmmn_mod_values_get;
+    // attrs_get[11].id = SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG;
+    // attrs_get[11].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[11].value.s32list.list = tx_pmos_vltg_reg_values_get;
+    // attrs_get[12].id = SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG;
+    // attrs_get[12].value.s32list.count = MAX_LANES_SPC3_4;
+    // attrs_get[12].value.s32list.list = tx_nmos_vltg_reg_values_get;
     
-
-    attrs_get[0].id = SAI_PORT_SERDES_ATTR_PORT_ID;
-    attrs_get[1].id = SAI_PORT_SERDES_ATTR_IDRIVER;
-    attrs_get[1].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[1].value.s32list.list = idriver_values_get;
-    attrs_get[2].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE1;
-    attrs_get[2].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[2].value.s32list.list = tx_fir_pre1_values_get;
-    attrs_get[3].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE2;
-    attrs_get[3].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[3].value.s32list.list = tx_fir_pre2_values_get;
-    attrs_get[4].id = SAI_PORT_SERDES_ATTR_TX_FIR_PRE3;
-    attrs_get[4].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[4].value.s32list.list = tx_fir_pre3_values_get;
-    attrs_get[5].id = SAI_PORT_SERDES_ATTR_TX_FIR_MAIN;
-    attrs_get[5].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[5].value.s32list.list = tx_fir_main_values_get;
-    attrs_get[6].id = SAI_PORT_SERDES_ATTR_TX_FIR_POST1;
-    attrs_get[6].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[6].value.s32list.list = tx_fir_post1_values_get;
-    attrs_get[7].id = SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO;
-    attrs_get[7].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[7].value.s32list.list = tx_pam4_ratio_values_get;
-    attrs_get[8].id = SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE;
-    attrs_get[8].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[8].value.s32list.list = tx_out_cmmn_mod_values_get;
-    attrs_get[9].id = SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE;
-    attrs_get[9].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[9].value.s32list.list = tx_pmos_cmmn_mod_values_get;
-    attrs_get[10].id = SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE;
-    attrs_get[10].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[10].value.s32list.list = tx_nmos_cmmn_mod_values_get;
-    attrs_get[11].id = SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG;
-    attrs_get[11].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[11].value.s32list.list = tx_pmos_vltg_reg_values_get;
-    attrs_get[12].id = SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG;
-    attrs_get[12].value.s32list.count = MAX_LANES_SPC3_4;
-    attrs_get[12].value.s32list.list = tx_nmos_vltg_reg_values_get;
-
-    status = sai_port_api->get_port_serdes_attribute(port_serdes_id, 13, attrs_get);
-   
-    if (status != SAI_STATUS_SUCCESS)
-    {
-        SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): Failed to read port serdes for port 0x%" PRIx64, port_id);
-    }
-    else{
-        SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): Succeeded to read port serdes for port 0x%" PRIx64, port_id);
-    }
-
-
-
-    SWSS_LOG_ERROR(" --- tomer --- FINAL_RESULTS3: printing SerDes content:");
-
-    for (int i = 0; i < 13; i++) { // Loop through the attrs_get array
-        SWSS_LOG_ERROR(" --- tomer --- attribute: %" PRIu32 "\n", attrs_get[i].id);
-
-        if (attrs_get[i].id == SAI_PORT_SERDES_ATTR_IDRIVER ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE1 ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE2 ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE3 ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_MAIN ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_POST1 ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG ||
-            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG) {
-
-            SWSS_LOG_ERROR(" --- tomer ---    Array values: ");
-            for (uint32_t j = 0; j < attrs_get[i].value.s32list.count; j++) {
-                SWSS_LOG_ERROR(" --- tomer --- %" PRIu32 " ", attrs_get[i].value.s32list.list[j]);
-            }
-        }
-    }
-
-
-
-    //--------------------------------------------
+    // status = sai_port_api->get_port_serdes_attribute(port_serdes_id, 13, attrs_get);
+    
+    // if (status != SAI_STATUS_SUCCESS)
+    // {
+        // SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): Failed to read port serdes for port 0x%" PRIx64, port_id);
+    // }
+    // else{
+        // SWSS_LOG_ERROR(" --- tomer --- setPortSerdesAttribute(): Succeeded to read port serdes for port 0x%" PRIx64, port_id);
+    // }
+    
+    
+    
+    // SWSS_LOG_ERROR(" --- tomer --- FINAL_RESULTS3: printing SerDes content:");
+    
+    // for (int i = 0; i < 13; i++) { // Loop through the attrs_get array
+        // SWSS_LOG_ERROR(" --- tomer --- attribute: %" PRIu32 "\n", attrs_get[i].id);
+    
+        // if (attrs_get[i].id == SAI_PORT_SERDES_ATTR_IDRIVER ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE1 ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE2 ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE3 ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_MAIN ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_POST1 ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PAM4_RATIO ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_OUT_COMMON_MODE ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG ||
+            // attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG) {
+    
+            // SWSS_LOG_ERROR(" --- tomer ---    Array values: ");
+            // for (uint32_t j = 0; j < attrs_get[i].value.s32list.count; j++) {
+                // SWSS_LOG_ERROR(" --- tomer --- %" PRIu32 " ", attrs_get[i].value.s32list.list[j]);
+            // }
+        // }
+    // }
+    
+    
+    
+    //// --------------------------------------------
     
     
     
@@ -8690,3 +8894,4 @@ void PortsOrch::doTask(swss::SelectableTimer &timer)
         m_port_state_poller->stop();
     }
 }
+
