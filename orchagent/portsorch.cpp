@@ -4065,9 +4065,9 @@ void PortsOrch::doPortTask(Consumer &consumer)
 			    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: after applying port toggling");
 				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: trying to read port serdes after setPortSerdesAttribute()");
 
-    		    //TODO: remove this part
+                //TODO: remove this part
     		    //--------------------------------------------
-    		    
+    		   
     		    int32_t MAX_LANES_SPC3_4 = 8;
 				sai_status_t status = SAI_STATUS_NOT_SUPPORTED;
 				sai_status_t status2 = SAI_STATUS_NOT_SUPPORTED;
@@ -4075,46 +4075,46 @@ void PortsOrch::doPortTask(Consumer &consumer)
 				
     		    int32_t                        idriver_values_get[8];   // size = MAX_LANES_SPC3_4
 			    std::memset(idriver_values_get, 0, sizeof(idriver_values_get));
-			    
+			   
     		    int32_t                        tx_fir_pre1_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_fir_pre1_values_get, 0, sizeof(tx_fir_pre1_values_get));
-			    
+			   
 			    int32_t                        tx_fir_pre2_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_fir_pre2_values_get, 0, sizeof(tx_fir_pre2_values_get));
-			    
+			   
 			    int32_t                        tx_fir_pre3_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_fir_pre3_values_get, 0, sizeof(tx_fir_pre3_values_get));
-			    
+			   
 			    int32_t                        tx_fir_main_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_fir_main_values_get, 0, sizeof(tx_fir_main_values_get));
-			    
+			   
 			    int32_t                        tx_fir_post1_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_fir_post1_values_get, 0, sizeof(tx_fir_post1_values_get));
-			    
+			   
 			    int32_t                        tx_pam4_ratio_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_pam4_ratio_values_get, 0, sizeof(tx_pam4_ratio_values_get));
-			    
+			   
 			    int32_t                        tx_out_cmmn_mod_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_out_cmmn_mod_values_get, 0, sizeof(tx_out_cmmn_mod_values_get));
-			    
+			   
 			    int32_t                        tx_pmos_cmmn_mod_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_pmos_cmmn_mod_values_get, 0, sizeof(tx_pmos_cmmn_mod_values_get));
-			    
+			   
 			    int32_t                        tx_nmos_cmmn_mod_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_nmos_cmmn_mod_values_get, 0, sizeof(tx_nmos_cmmn_mod_values_get));
-			    
+			   
 			    int32_t                        tx_pmos_vltg_reg_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_pmos_vltg_reg_values_get, 0, sizeof(tx_pmos_vltg_reg_values_get));
-			    
+			   
 			    int32_t                        tx_nmos_vltg_reg_values_get[8];   // size = MAX_LANES_SPC3_4
     		    std::memset(tx_nmos_vltg_reg_values_get, 0, sizeof(tx_nmos_vltg_reg_values_get));
-			    
-			    
-			    
-			    
+			   
+			   
+			   
+			   
     		    sai_attribute_t                attrs_get[16];
-    		    
-    		    
+    		   
+    		   
     		    attrs_get[0].id = SAI_PORT_SERDES_ATTR_PORT_ID;
     		    attrs_get[1].id = SAI_PORT_SERDES_ATTR_IDRIVER;
     		    attrs_get[1].value.s32list.count = MAX_LANES_SPC3_4;
@@ -4152,18 +4152,18 @@ void PortsOrch::doPortTask(Consumer &consumer)
     		    attrs_get[12].id = SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG;
     		    attrs_get[12].value.s32list.count = MAX_LANES_SPC3_4;
     		    attrs_get[12].value.s32list.list = tx_nmos_vltg_reg_values_get;
-    		    
+    		   
 				
 				
-
 				    // attr.id = SAI_PORT_ATTR_QOS_QUEUE_LIST;
 					// attr.value.objlist.count = (uint32_t)port.m_queue_ids.size();
 					// attr.value.objlist.list = port.m_queue_ids.data();
-
 					// status = sai_port_api->get_port_attribute(port.m_port_id, 1, &attr);
 					
 	
-	
+                //SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: current port: %s", key.c_str());
+                //SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: current port: %s", pCfg.key.c_str());
+				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: current port: %s", p.m_alias.c_str());
 				
 				port_attr.id = SAI_PORT_ATTR_PORT_SERDES_ID;
 				status2 = sai_port_api->get_port_attribute(p.m_port_id, 1, &port_attr);
@@ -4178,7 +4178,6 @@ void PortsOrch::doPortTask(Consumer &consumer)
 				
 				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.id = %" PRIu32, port_attr.id);
 				SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.value.oid = 0x%" PRIx64, port_attr.value.oid);
-
 				// if(port_attr.value.oid == nullptr){
 					// SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: port_attr.id IS NULL");
 				// }
@@ -4188,7 +4187,7 @@ void PortsOrch::doPortTask(Consumer &consumer)
 				
 				
     		    status = sai_port_api->get_port_serdes_attribute(port_attr.value.oid, 13, attrs_get);
-    		    
+    		   
     		    if (status != SAI_STATUS_SUCCESS)
     		    {
     		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Failed to read port serdes for port 0x%" PRIx64, p.m_port_id);
@@ -4197,15 +4196,17 @@ void PortsOrch::doPortTask(Consumer &consumer)
 				{
     		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Succeeded to read port serdes for port 0x%" PRIx64, p.m_port_id);
     		    }
-    		    
-    		    
-    		    
+    		   
+    		   
+    		   
     		    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: printing SerDes content:");
-    		    
+    		   
     		    for (int i = 0; i < 13; i++) // Loop through the attrs_get array
 				{
-    		        SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Attribute: %" PRIu32 "\n", attrs_get[i].id);
-    		    
+    		   
+                    SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Attribute (number): %" PRIu32 "\n", attrs_get[i].id);
+					SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Attribute (string): %s\n", attrs_get[i].id);
+					SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3: Attribute (attrToString): %s\n", (attrToString(attrs_get[i].id)).c_str());
     		        if (attrs_get[i].id == SAI_PORT_SERDES_ATTR_IDRIVER ||
     		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE1 ||
     		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_FIR_PRE2 ||
@@ -4217,17 +4218,17 @@ void PortsOrch::doPortTask(Consumer &consumer)
     		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_COMMON_MODE ||
     		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_COMMON_MODE ||
     		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_PMOS_VLTG_REG ||
-    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG) 
+    		            attrs_get[i].id == SAI_PORT_SERDES_ATTR_TX_NMOS_VLTG_REG)
 					{
-    		    
+    		   
     		            SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3:     Array values: ");
-    		            for (uint32_t j = 0; j < attrs_get[i].value.s32list.count; j++) 
+    		            for (uint32_t j = 0; j < attrs_get[i].value.s32list.count; j++)
 						{
     		                SWSS_LOG_ERROR(" --- tomer --- doPortTask(): FINAL_RESULTS3:  %" PRIu32 " ", attrs_get[i].value.s32list.list[j]);
     		            }
     		        }
     		    }
-    		    
+    		   
     		    //--------------------------------------------
 			
 			
