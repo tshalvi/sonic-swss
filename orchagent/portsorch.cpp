@@ -4026,9 +4026,6 @@ void PortsOrch::doPortTask(Consumer &consumer)
                 }
 
                 SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): Before initHostTxReadyState(p)");
-                SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): Sleep(3) to simulate HW_TX_READY");
-                sleep(3);
-                SWSS_LOG_ERROR("----- TOMER ----- doPortTask(): Done sleeping");
                 
                 /* create host_tx_ready field in state-db */
                 initHostTxReadyState(p);
