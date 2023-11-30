@@ -70,6 +70,7 @@ public:
     struct {
         sai_port_fec_mode_t value;
         bool is_set = false;
+        bool override_fec = false;
     } fec; // Port FEC
 
     struct {
@@ -153,6 +154,36 @@ public:
             std::vector<std::uint32_t> value;
             bool is_set = false;
         } attn; // Port serdes attn
+
+        struct {
+            std::vector<std::uint32_t> value;
+            bool is_set = false;
+        } ob_m2lp; // Port serdes ob_m2lp
+
+        struct {
+            std::vector<std::uint32_t> value;
+            bool is_set = false;
+        } ob_alev_out; // Port serdes ob_alev_out
+
+        struct {
+            std::vector<std::uint32_t> value;
+            bool is_set = false;
+        } obplev; // Port serdes obplev
+
+        struct {
+            std::vector<std::uint32_t> value;
+            bool is_set = false;
+        } obnlev; // Port serdes obnlev
+
+        struct {
+            std::vector<std::uint32_t> value;
+            bool is_set = false;
+        } regn_bfm1p; // Port serdes regn_bfm1p
+
+        struct {
+            std::vector<std::uint32_t> value;
+            bool is_set = false;
+        } regn_bfm1n; // Port serdes regn_bfm1n
 
     } serdes; // Port serdes
 
