@@ -1319,6 +1319,15 @@ bool IntfsOrch::removeRouterIntfs(Port &port)
     const auto id = sai_serialize_object_id(port.m_rif_id);
     removeRifFromFlexCounter(id, port.m_alias);
 
+    for (auto it = m_rifsToAdd.begin(); it != m_rifsToAdd.end(); ++it)
+    {
+        if (it->m_rif_id == port.m_rif_id)
+        {
+            m_rifsToAdd.erase(it);
+            break;
+        }
+    }
+
     sai_status_t status = sai_router_intfs_api->remove_router_interface(port.m_rif_id);
     if (status != SAI_STATUS_SUCCESS)
     {
