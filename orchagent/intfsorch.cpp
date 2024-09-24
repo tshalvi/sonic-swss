@@ -1322,7 +1322,7 @@ bool IntfsOrch::removeRouterIntfs(Port &port)
         if (it->m_rif_id == port.m_rif_id)
         {
             m_rifsToAdd.erase(it);
-            port_found = true
+            port_found = true;
             break;
         }
     }
