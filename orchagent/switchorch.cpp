@@ -1213,7 +1213,7 @@ bool SwitchOrch::setAgingFDB(uint32_t sec)
     auto status = sai_switch_api->set_switch_attribute(gSwitchId, &attr);
     if (status != SAI_STATUS_SUCCESS)
     {
-        SWSS_LOG_NOTICE("--- RESTARTCHECK_failed_debug --- Failed to set switch %" PRIx64 " fdb_aging_time attribute: %d", gSwitchId, status);
+        SWSS_LOG_ERROR("Failed to set switch %" PRIx64 " fdb_aging_time attribute: %d", gSwitchId, status);
         task_process_status handle_status = handleSaiSetStatus(SAI_API_SWITCH, status);
         if (handle_status != task_success)
         {
